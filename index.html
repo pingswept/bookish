@@ -9,14 +9,31 @@
 <input id="file-input" type="file">
 <div id="booklist">
   <input class="search" placeholder="Search" />
-  <button class="sort" data-sort="name">
-    Sort by name
+  <button class="sort" data-sort="Title">
+    Sort by title
   </button>
   <table>
     <tbody class="list">
       <tr>
-        <td class="ISBN">1234</td>
+        <td class="Book Id">1234</td>
         <td class="Title">Why I Am Afraid of Bees</td>
+        <td class="Author">R. L. Stine</td>
+        <td class="Author l-f"></td>
+        <td class="Additional Authors"></td>
+        <td class="ISBN"></td>
+        <td class="ISBN13"></td>
+        <td class="Publisher"></td>
+        <td class="Binding"></td>
+        <td class="Number of Pages"></td>
+        <td class="Year Published"></td>
+        <td class="Original Publication Year"></td>
+        <td class="Date Read"></td>
+        <td class="Bookshelves"></td>
+        <td class="Exclusive Shelf"></td>
+        <td class="My Review"></td>
+        <td class="Spoiler"></td>
+        <td class="Private Notes"></td>
+        <td class="Read Count"></td>
       </tr>
     </tbody>
   </table>
@@ -37,7 +54,7 @@
 					var books = Papa.parse(reader.result, { header: true });
 					console.log(books);
 					var options = {
-						valueNames: [ 'ISBN', 'Title' ],
+						valueNames: [ 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review', 'Spoiler', 'Private Notes', 'Read Count' ],
 					};
 
 					var booklist = new List('booklist', options);
