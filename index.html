@@ -1,0 +1,56 @@
+<html>
+<head>
+	<link rel="stylesheet" href="css/main.css">
+    <script src="js/list.js"></script>
+    <script src="js/papaparse.js"></script>
+</head>
+<body>
+<h1>Bookish</h1>
+<input id="file-input" type="file">
+<div id="booklist">
+  <input class="search" placeholder="Search" />
+  <button class="sort" data-sort="name">
+    Sort by name
+  </button>
+  <table>
+    <tbody class="list">
+      <tr>
+        <td class="ISBN">1234</td>
+        <td class="Title">Why I Am Afraid of Bees</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+<script>
+    window.onload = function() {
+		var fileInput = document.getElementById('file-input');
+		var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+		fileInput.addEventListener('change', function(e) {
+			var file = fileInput.files[0];
+			var textType = /text.*/;
+
+			if (file.type.match(textType)) {
+				var reader = new FileReader();
+
+				reader.onload = function(e) {
+					var books = Papa.parse(reader.result, { header: true });
+					console.log(books);
+					var options = {
+						valueNames: [ 'ISBN', 'Title' ],
+					};
+
+					var booklist = new List('booklist', options);
+					books.data.forEach(function(element) {
+						booklist.add(element);
+				    });
+				}
+
+				reader.readAsText(file);	
+			} else {
+				fileDisplayArea.innerText = "File not supported!"
+			}
+		});
+    }
+</script>
+</html>
