@@ -1,3 +1,18 @@
+body {
+  color: #cfd2da;
+  background-color: #252830;
+  font-weight: 300;
+  letter-spacing: 0;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+table {
+  border: 1px solid #cfd2da;
+  border-collapse:collapse;
+}
+
 .list {
   font-family:sans-serif;
 }

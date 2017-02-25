@@ -1,8 +1,8 @@
 <html>
 <head>
 	<link rel="stylesheet" href="css/main.css">
-    <script src="js/list.js"></script>
-    <script src="js/papaparse.js"></script>
+    <script src="../js/list.js"></script>
+    <script src="../js/papaparse.js"></script>
 </head>
 <body>
 <h1>Bookish</h1>
@@ -15,6 +15,7 @@
   <table>
     <tbody class="list">
       <tr>
+      	<td class="Cover Image"><img src="http://covers.openlibrary.org/b/isbn/0385472579-S.jpg"></td>
         <td class="Book Id">1234</td>
         <td class="Title">Why I Am Afraid of Bees</td>
         <td class="Author">R. L. Stine</td>
@@ -61,6 +62,7 @@
 					books.data.forEach(function(element) {
 						booklist.add(element);
 				    });
+          booklist.add({ Cover Image: '<img src="http://covers.openlibrary.org/b/isbn/' + 'ISBN' + '-S.jpg">' });
 				}
 
 				reader.readAsText(file);	
