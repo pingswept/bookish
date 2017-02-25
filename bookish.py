@@ -1,8 +1,8 @@
 from flask import Flask, render_template
-bookish = Flask(__name__)
+bookish = Flask(__name__, static_url_path='/static')
 
 @bookish.route("/")
-def hello():
+def test():
     return "Hello World!"
 
 @bookish.route('/hello/<name>')

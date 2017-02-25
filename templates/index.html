@@ -1,8 +1,8 @@
 <html>
 <head>
-	<link rel="stylesheet" href="css/main.css">
-    <script src="../js/list.js"></script>
-    <script src="../js/papaparse.js"></script>
+	<link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/list.js"></script>
+    <script src="/static/js/papaparse.js"></script>
 </head>
 <body>
 <h1>Bookish</h1>
@@ -55,14 +55,15 @@
 					var books = Papa.parse(reader.result, { header: true });
 					console.log(books);
 					var options = {
-						valueNames: [ 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review', 'Spoiler', 'Private Notes', 'Read Count' ],
+						valueNames: [ 'Cover Image', 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review', 'Spoiler', 'Private Notes', 'Read Count' ],
 					};
 
 					var booklist = new List('booklist', options);
 					books.data.forEach(function(element) {
+            element["Cover Image"] = '<img src="/static/img/'.concat(element['ISBN13'], '-S.jpg">');
+            console.log(element);
 						booklist.add(element);
-				    });
-          booklist.add({ Cover Image: '<img src="http://covers.openlibrary.org/b/isbn/' + 'ISBN' + '-S.jpg">' });
+				  });
 				}
 
 				reader.readAsText(file);	
