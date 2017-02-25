@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Bookish</h1>
+<form action="/get-book-by-isbn" method="post">
+    <div>
+        <label for="isbn">ISBN13:</label>
+        <input type="text" id="isbn" name="isbn">
+    </div>
+</form>
 <input id="file-input" type="file">
 <div id="booklist">
   <input class="search" placeholder="Search" />
