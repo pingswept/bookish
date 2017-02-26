@@ -6,12 +6,10 @@
 </head>
 <body>
 <h1>Bookish</h1>
-<form action="/get-book-by-isbn" method="post">
-    <div>
-        <label for="isbn">ISBN13:</label>
-        <input type="text" id="isbn" name="isbn">
-    </div>
-</form>
+<div id="isbn-form">
+    <label for="isbn">ISBN13:</label>
+    <input type="text" id="isbn" name="isbn">
+</div>
 <div id="booklist">
   <input class="search" placeholder="Search" />
   <button class="sort" data-sort="Title">
@@ -23,6 +21,16 @@
 </div>
 </body>
 <script>
+  $("#isbn").bind("enterKey",function(e){
+    $.post("/get-book-by-isbn", $("#isbn").serialize(), function(data) {
+        // add returned data to table here
+    });
+  });
+  $("#isbn").keyup(function(e){
+    if(e.keyCode == 13) {
+      $(this).trigger("enterKey");
+    }
+  });
   $("tbody").addClass("list");
   $("table tr td:nth-child(1)").addClass('Cover Image');
   $("table tr td:nth-child(2)").addClass('Book Id');
@@ -47,11 +55,6 @@
 		};
 
 		var booklist = new List('booklist', options);
-		/*books.data.forEach(function(element) {
-      element["Cover Image"] = '<img src="/static/img/'.concat(element['ISBN13'], '-S.jpg">');
-      console.log(element);
-			booklist.add(element);
-	  });*/
 	};
 </script>
 </html>

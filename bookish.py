@@ -3,6 +3,10 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
+dataset = tablib.Dataset()
+with open("test.csv") as f:
+    dataset.csv = f.read()
+
 @bookish.route('/')
 def hello():
     return render_template('index.html')
@@ -10,11 +14,8 @@ def hello():
 @bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
 def get_book():
     r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + request.form['isbn'] + "&jscmd=data")
+    # need to add result to dataset here
     return r.text
-
-dataset = tablib.Dataset()
-with open("test.csv") as f:
-    dataset.csv = f.read()
 
 @bookish.route("/dataset")
 def index():
