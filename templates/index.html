@@ -2,7 +2,7 @@
 <head>
 	<link rel="stylesheet" href="/static/css/main.css">
     <script src="/static/js/list.js"></script>
-    <script src="/static/js/papaparse.js"></script>
+    <script src='http://code.jquery.com/jquery-latest.min.js'></script>
 </head>
 <body>
 <h1>Bookish</h1>
@@ -12,71 +12,46 @@
         <input type="text" id="isbn" name="isbn">
     </div>
 </form>
-<input id="file-input" type="file">
 <div id="booklist">
   <input class="search" placeholder="Search" />
   <button class="sort" data-sort="Title">
     Sort by title
   </button>
-  <table>
-    <tbody class="list">
-      <tr>
-      	<td class="Cover Image"><img src="http://covers.openlibrary.org/b/isbn/0385472579-S.jpg"></td>
-        <td class="Book Id">1234</td>
-        <td class="Title">Why I Am Afraid of Bees</td>
-        <td class="Author">R. L. Stine</td>
-        <td class="Author l-f"></td>
-        <td class="Additional Authors"></td>
-        <td class="ISBN"></td>
-        <td class="ISBN13"></td>
-        <td class="Publisher"></td>
-        <td class="Binding"></td>
-        <td class="Number of Pages"></td>
-        <td class="Year Published"></td>
-        <td class="Original Publication Year"></td>
-        <td class="Date Read"></td>
-        <td class="Bookshelves"></td>
-        <td class="Exclusive Shelf"></td>
-        <td class="My Review"></td>
-        <td class="Spoiler"></td>
-        <td class="Private Notes"></td>
-        <td class="Read Count"></td>
-      </tr>
-    </tbody>
-  </table>
+  {% block body %}
+  {{ table|safe }}
+  {% endblock %}
+</div>
 </body>
 <script>
-    window.onload = function() {
-		var fileInput = document.getElementById('file-input');
-		var fileDisplayArea = document.getElementById('fileDisplayArea');
+  $("tbody").addClass("list");
+  $("table tr td:nth-child(1)").addClass('Cover Image');
+  $("table tr td:nth-child(2)").addClass('Book Id');
+  $("table tr td:nth-child(3)").addClass('Title');
+  $("table tr td:nth-child(4)").addClass('Author');
+  $("table tr td:nth-child(5)").addClass('Author l-f');
+  $("table tr td:nth-child(6)").addClass('Additional Authors');
+  $("table tr td:nth-child(7)").addClass('ISBN');
+  $("table tr td:nth-child(8)").addClass('ISBN13');
+  $("table tr td:nth-child(9)").addClass('Publisher');
+  $("table tr td:nth-child(10)").addClass('Binding');
+  $("table tr td:nth-child(11)").addClass('Number of Pages');
+  $("table tr td:nth-child(12)").addClass('Year Published');
+  $("table tr td:nth-child(13)").addClass('Original Publication Year');
+  $("table tr td:nth-child(14)").addClass('Date Read');
+  $("table tr td:nth-child(15)").addClass('Bookshelves');
+  $("table tr td:nth-child(16)").addClass('Exclusive Shelf');
+  $("table tr td:nth-child(17)").addClass('My Review');
+  window.onload = function() {
+		var options = {
+			valueNames: [ 'Cover Image', 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review'],
+		};
 
-		fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-			var textType = /text.*/;
-
-			if (file.type.match(textType)) {
-				var reader = new FileReader();
-
-				reader.onload = function(e) {
-					var books = Papa.parse(reader.result, { header: true });
-					console.log(books);
-					var options = {
-						valueNames: [ 'Cover Image', 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review', 'Spoiler', 'Private Notes', 'Read Count' ],
-					};
-
-					var booklist = new List('booklist', options);
-					books.data.forEach(function(element) {
-            element["Cover Image"] = '<img src="/static/img/'.concat(element['ISBN13'], '-S.jpg">');
-            console.log(element);
-						booklist.add(element);
-				  });
-				}
-
-				reader.readAsText(file);	
-			} else {
-				fileDisplayArea.innerText = "File not supported!"
-			}
-		});
-    }
+		var booklist = new List('booklist', options);
+		/*books.data.forEach(function(element) {
+      element["Cover Image"] = '<img src="/static/img/'.concat(element['ISBN13'], '-S.jpg">');
+      console.log(element);
+			booklist.add(element);
+	  });*/
+	};
 </script>
 </html>
