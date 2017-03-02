@@ -33,25 +33,22 @@
   });
   $("tbody").addClass("list");
   $("table tr td:nth-child(1)").addClass('Cover Image');
-  $("table tr td:nth-child(2)").addClass('Book Id');
-  $("table tr td:nth-child(3)").addClass('Title');
-  $("table tr td:nth-child(4)").addClass('Author');
-  $("table tr td:nth-child(5)").addClass('Author l-f');
-  $("table tr td:nth-child(6)").addClass('Additional Authors');
-  $("table tr td:nth-child(7)").addClass('ISBN');
-  $("table tr td:nth-child(8)").addClass('ISBN13');
-  $("table tr td:nth-child(9)").addClass('Publisher');
-  $("table tr td:nth-child(10)").addClass('Binding');
-  $("table tr td:nth-child(11)").addClass('Number of Pages');
-  $("table tr td:nth-child(12)").addClass('Year Published');
-  $("table tr td:nth-child(13)").addClass('Original Publication Year');
-  $("table tr td:nth-child(14)").addClass('Date Read');
-  $("table tr td:nth-child(15)").addClass('Bookshelves');
-  $("table tr td:nth-child(16)").addClass('Exclusive Shelf');
-  $("table tr td:nth-child(17)").addClass('My Review');
+  $("table tr td:nth-child(2)").addClass('Title');
+  $("table tr td:nth-child(3)").addClass('By');
+  $("table tr td:nth-child(4)").addClass('ISBN');
+  $("table tr td:nth-child(5)").addClass('ISBN13');
+  $("table tr td:nth-child(6)").addClass('Publisher');
+  $("table tr td:nth-child(7)").addClass('Binding');
+  $("table tr td:nth-child(8)").addClass('Pages');
+  $("table tr td:nth-child(9)").addClass('Year Published');
+  $("table tr td:nth-child(10)").addClass('Original Publication Year');
+  $("table tr td:nth-child(11)").addClass('Date Read');
+  $("table tr td:nth-child(12)").addClass('Owned');
+  $("table tr td:nth-child(13)").addClass('Read');
+  $("table tr td:nth-child(14)").addClass('Review');
   window.onload = function() {
 		var options = {
-			valueNames: [ 'Cover Image', 'Book Id', 'Title', 'Author', 'Author l-f', 'Additional Authors', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Number of Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Bookshelves', 'Exclusive Shelf', 'My Review'],
+			valueNames: [ 'Cover Image', 'Title', 'By', 'ISBN', 'ISBN13', 'Publisher', 'Binding', 'Pages', 'Year Published', 'Original Publication Year', 'Date Read', 'Owned', 'Read', 'Review'],
 		};
 
 		var booklist = new List('booklist', options);
