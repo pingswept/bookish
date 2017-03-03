@@ -24,9 +24,56 @@ def index():
 @bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
 def get_book():
     r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + request.form['isbn'] + "&jscmd=data&format=json")
+    print('Checking by ISBN-13')
+    print r.status_code
+    isbn = request.form['isbn']
+    if((r.status_code != 200) or (len(r.text) < 5)):
+        print('Nothing found via ISBN-13')
+        print('Checking by ISBN-10')
+        r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + request.form['isbn'][3:] + "&jscmd=data&format=json")
+        isbn = request.form['isbn'][3:]
     book_data = json.loads(r.text)
-    d = book_data['ISBN:' + request.form['isbn']]
-    data_list = [d['title'], d['authors'][0]['name'], d['identifiers']['isbn_13'][0][3:], d['identifiers']['isbn_13'][0], d['publishers'][0]['name'], '', ''.join(n for n in d['pagination'] if n.isdigit()), d['publish_date'], '', '', 'owned', '', '\n']
+    d = book_data['ISBN:' + isbn]
+
+    try:
+        author = d['authors'][0]['name']
+    except KeyError:
+        author = ''
+    try:
+        author = d['by_statement']
+    except KeyError:
+        author = ''
+
+    try:
+        pages = ''.join(n for n in d['pagination'] if n.isdigit())
+    except KeyError:
+        pages = ''
+
+    try:
+        pages = str(d['number_of_pages'])
+    except KeyError:
+        pages = ''
+
+    try:
+        pub_date = d['publish_date']
+    except KeyError:
+        pub_date = 'unknown'
+
+    data_list = [
+        d['title'],
+        author,
+        request.form['isbn'][3:],
+        request.form['isbn'],
+        d['publishers'][0]['name'],
+        '',
+        pages,
+        pub_date,
+        '',
+        '',
+        'owned',
+        '',
+        '\n'
+    ]
     csv_list = [commify(x) for x in data_list]
     result = ",".join(str(elem) for elem in csv_list)
     print result
