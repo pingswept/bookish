@@ -11,14 +11,14 @@ if __name__ == '__main__':
     infile = csv.reader(open(sys.argv[1], 'r'))
     infile.next() # skip header row
     for line in infile:
-        print line[6]
-        isbn13 = str(line[6])
+        print line[3]
+        isbn13 = str(line[3])
         base_url = "http://covers.openlibrary.org/b/isbn/"
         filename_small = isbn13 + "-S.jpg"
         filename_large = isbn13 + "-L.jpg"
 
        	for name in [filename_small, filename_large]:
-       		image_path = "img/" + name
+       		image_path = "static/img/" + name
        		if not os.path.isfile(image_path):
 	       		time.sleep(5)
 		        r = requests.get(base_url + name, stream=True)

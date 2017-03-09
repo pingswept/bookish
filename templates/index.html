@@ -24,6 +24,8 @@
   $("#isbn").bind("enterKey",function(e){
     $.post("/get-book-by-isbn", $("#isbn").serialize(), function(data) {
         // add returned data to table here
+        // clear input box for next entry
+        $("#isbn").val('');
     });
   });
   $("#isbn").keyup(function(e){

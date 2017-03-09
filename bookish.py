@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "books.csv"
+DATAFILE = "test.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -21,17 +21,18 @@ def index():
         dataset.insert_col(0, image_html_list, header='Cover Image')
     return render_template('index.html', table = dataset.html)
 
-@bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
-def get_book():
-    r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + request.form['isbn'] + "&jscmd=data&format=json")
+#r = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:" + request.form['isbn'])
+
+def check_open_library(isbn):
+    r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn + "&jscmd=data&format=json")
     print('Checking by ISBN-13')
     print r.status_code
-    isbn = request.form['isbn']
     if((r.status_code != 200) or (len(r.text) < 5)):
+        # This branch of code might be broken. No books with invalid ISBN13 but valid ISBN10 available.
         print('Nothing found via ISBN-13')
         print('Checking by ISBN-10')
-        r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + request.form['isbn'][3:] + "&jscmd=data&format=json")
-        isbn = request.form['isbn'][3:]
+        r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn[3:] + "&jscmd=data&format=json")
+        isbn = isbn[3:]
     book_data = json.loads(r.text)
     d = book_data['ISBN:' + isbn]
 
@@ -74,6 +75,11 @@ def get_book():
         '',
         '\n'
     ]
+    return data_list
+
+@bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
+def get_book():
+    data_list = check_open_library(request.form['isbn'])
     csv_list = [commify(x) for x in data_list]
     result = ",".join(str(elem) for elem in csv_list)
     print result
