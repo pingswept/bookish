@@ -21,7 +21,7 @@ def index():
         dataset.insert_col(0, image_html_list, header='Cover Image')
     return render_template('index.html', table = dataset.html)
 
-def book_found(book_data):
+def book_found(book_data, isbn):
     key = 'ISBN:' + isbn
     if key in book_data:
         return True
@@ -67,22 +67,24 @@ def check_google_books(isbn):
     ]
     return data_list
 
-
-
 def check_open_library(isbn):
     r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn + "&jscmd=data&format=json")
     print('Checking Open Library by ISBN-13')
     print r.status_code
     book_data = json.loads(r.text)
-    if(not book_found(book_data)):
+    if(not book_found(book_data, isbn)):
         # This branch of code might be broken. No books with invalid ISBN13 but valid ISBN10 available.
         print('Nothing found in Open Library via ISBN-13')
         print('Checking Open Library by ISBN-10')
         r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn[3:] + "&jscmd=data&format=json")
         isbn = isbn[3:]
         book_data = json.loads(r.text)
-
-    d = book_data['ISBN:' + isbn]
+    try:
+        d = book_data['ISBN:' + isbn]
+    except KeyError:
+        print('Book not found in Open Library')
+        data_list = ''
+        return data_list
 
     try:
         author = d['authors'][0]['name']
@@ -127,8 +129,9 @@ def check_open_library(isbn):
 
 @bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
 def get_book():
-    #data_list = check_open_library(request.form['isbn'])
-    data_list = check_google_books(request.form['isbn'])
+    data_list = check_open_library(request.form['isbn'])
+    if(data_list == ''):
+        data_list = check_google_books(request.form['isbn'])
     csv_list = [commify(x) for x in data_list]
     result = ",".join(str(elem) for elem in csv_list)
     print result
