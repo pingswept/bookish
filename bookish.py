@@ -21,19 +21,67 @@ def index():
         dataset.insert_col(0, image_html_list, header='Cover Image')
     return render_template('index.html', table = dataset.html)
 
-#r = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:" + request.form['isbn'])
+def book_found(book_data):
+    key = 'ISBN:' + isbn
+    if key in book_data:
+        return True
+    else:
+        return False
+
+def check_google_books(isbn):
+    r = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:" + request.form['isbn'])
+    print('Checking Google Books by ISBN-13')
+    print r.status_code
+    book_data = json.loads(r.text)
+    d = book_data['items'][0]['volumeInfo']
+
+    try:
+        author = d['authors'][0]
+    except KeyError:
+        author = ''
+
+    try:
+        pages = str(d['pageCount'])
+    except KeyError:
+        pages = ''
+
+    try:
+        pub_date = d['publishedDate']
+    except KeyError:
+        pub_date = 'unknown'
+
+    data_list = [
+        d['title'],
+        author,
+        isbn[3:],
+        isbn,
+        d['publisher'],
+        '',
+        pages,
+        pub_date,
+        '',
+        '',
+        'owned',
+        '',
+        '\n'
+    ]
+    return data_list
+
+
 
 def check_open_library(isbn):
     r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn + "&jscmd=data&format=json")
-    print('Checking by ISBN-13')
+    print('Checking Open Library by ISBN-13')
     print r.status_code
-    if((r.status_code != 200) or (len(r.text) < 5)):
+    book_data = json.loads(r.text)
+    if(not book_found(book_data)):
         # This branch of code might be broken. No books with invalid ISBN13 but valid ISBN10 available.
-        print('Nothing found via ISBN-13')
-        print('Checking by ISBN-10')
+        print('Nothing found in Open Library via ISBN-13')
+        print('Checking Open Library by ISBN-10')
         r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn[3:] + "&jscmd=data&format=json")
         isbn = isbn[3:]
-    book_data = json.loads(r.text)
+        book_data = json.loads(r.text)
+
     d = book_data['ISBN:' + isbn]
 
     try:
@@ -79,7 +127,8 @@ def check_open_library(isbn):
 
 @bookish.route('/get-book-by-isbn', methods = ['GET', 'POST'])
 def get_book():
-    data_list = check_open_library(request.form['isbn'])
+    #data_list = check_open_library(request.form['isbn'])
+    data_list = check_google_books(request.form['isbn'])
     csv_list = [commify(x) for x in data_list]
     result = ",".join(str(elem) for elem in csv_list)
     print result
