@@ -23,7 +23,10 @@
 <script>
   $("#isbn").bind("enterKey",function(e){
     $.post("/get-book-by-isbn", $("#isbn").serialize(), function(data) {
+        output = '<tr>' + data + '</tr>'
+        console.log(output);
         // add returned data to table here
+        $('table tbody tr:first').before(output);
         // clear input box for next entry
         $("#isbn").val('');
     });

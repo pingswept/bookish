@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "books.csv"
+DATAFILE = "test.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -151,7 +151,9 @@ def get_book():
     with open(DATAFILE, 'w') as f:
         f.writelines(lines)
         f.close()
-    return result
+    img = '<img src="http://covers.openlibrary.org/b/isbn/' + request.form['isbn'] + '-S.jpg">'
+    table_row = "<td>" + img + "</td><td>" + "</td><td>".join(str(elem) for elem in csv_list) + "</td>"
+    return table_row
 
 if __name__ == "__main__":
     bookish.run(host= '0.0.0.0')
