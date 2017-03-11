@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "test.csv"
+DATAFILE = "books.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -41,6 +41,11 @@ def check_google_books(isbn):
         author = ''
 
     try:
+        publisher = d['publisher']
+    except KeyError:
+        publisher = ''
+
+    try:
         pages = str(d['pageCount'])
     except KeyError:
         pages = ''
@@ -55,7 +60,7 @@ def check_google_books(isbn):
         author,
         isbn[3:],
         isbn,
-        d['publisher'],
+        publisher,
         '',
         pages,
         pub_date,
@@ -96,6 +101,11 @@ def check_open_library(isbn):
         author = ''
 
     try:
+        publisher = d['publishers'][0]['name']
+    except KeyError:
+        publisher = ''
+
+    try:
         pages = ''.join(n for n in d['pagination'] if n.isdigit())
     except KeyError:
         pages = ''
@@ -115,7 +125,7 @@ def check_open_library(isbn):
         author,
         request.form['isbn'][3:],
         request.form['isbn'],
-        d['publishers'][0]['name'],
+        publisher,
         '',
         pages,
         pub_date,
@@ -144,4 +154,4 @@ def get_book():
     return result
 
 if __name__ == "__main__":
-    bookish.run()
+    bookish.run(host= '0.0.0.0')
