@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "test.csv"
+DATAFILE = "books.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -31,7 +31,7 @@ def book_found(book_data, isbn):
 def check_google_books(isbn):
     r = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:" + request.form['isbn'])
     print('Checking Google Books by ISBN-13')
-    print r.status_code
+    print(r.status_code)
     book_data = json.loads(r.text)
     d = book_data['items'][0]['volumeInfo']
 
@@ -75,7 +75,7 @@ def check_google_books(isbn):
 def check_open_library(isbn):
     r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn + "&jscmd=data&format=json")
     print('Checking Open Library by ISBN-13')
-    print r.status_code
+    print(r.status_code)
     book_data = json.loads(r.text)
     if(not book_found(book_data, isbn)):
         # This branch of code might be broken. No books with invalid ISBN13 but valid ISBN10 available.
@@ -144,7 +144,7 @@ def get_book():
         data_list = check_google_books(request.form['isbn'])
     csv_list = [commify(x) for x in data_list]
     result = ",".join(str(elem) for elem in csv_list)
-    print result
+    print(result)
     with open(DATAFILE, 'r') as f:
         lines = f.readlines()
     lines.insert(1, result)
