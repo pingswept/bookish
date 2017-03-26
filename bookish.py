@@ -17,9 +17,19 @@ def index():
     dataset = tablib.Dataset()
     with open(DATAFILE) as f:
         dataset.csv = f.read()
-        image_html_list = ['<img src="/static/img/' + isbn + '-S.jpg">' for isbn in dataset['ISBN13']]
+        image_html_list = ['<a href="/books/' + isbn + '"><img src="/static/img/' + isbn + '-S.jpg"></a>' for isbn in dataset['ISBN13']]
         dataset.insert_col(0, image_html_list, header='Cover Image')
     return render_template('index.html', table = dataset.html)
+
+@bookish.route("/books/<isbn>")
+def book_detail(isbn):
+    data = tablib.Dataset()
+    with open(DATAFILE) as f:
+        data.csv = f.read()
+    print data.headers
+    row = data[u'ISBN13'].index(isbn)
+    book = data[row]
+    return("Title: " + book[0] + " by " + book[1])
 
 def book_found(book_data, isbn):
     key = 'ISBN:' + isbn
