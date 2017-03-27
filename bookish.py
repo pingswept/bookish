@@ -29,7 +29,7 @@ def book_detail(isbn):
     print data.headers
     row = data[u'ISBN13'].index(isbn)
     book = data[row]
-    return("Title: " + book[0] + " by " + book[1])
+    return render_template('book.html', title = book[0], author = book[1], review = book[12])
 
 def book_found(book_data, isbn):
     key = 'ISBN:' + isbn
