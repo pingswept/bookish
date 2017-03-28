@@ -1,11 +1,15 @@
-body {
+body, textarea {
   color: #cfd2da;
   background-color: #252830;
   font-weight: 300;
-  letter-spacing: 0;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
   line-height: 1.5;
+}
+
+textarea {
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 table {

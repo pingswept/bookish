@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "books.csv"
+DATAFILE = "test.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -29,7 +29,21 @@ def book_detail(isbn):
     print data.headers
     row = data[u'ISBN13'].index(isbn)
     book = data[row]
-    return render_template('book.html', title = book[0], author = book[1], review = book[12])
+    return render_template('book.html', title = book[0], author = book[1], isbn = book[3], review = book[12])
+
+@bookish.route("/add_review", methods=['GET', 'POST'])
+def add_review():
+    data = tablib.Dataset()    
+    with open(DATAFILE, 'r') as f:
+        data.csv = f.read()
+    row = data[u'ISBN13'].index(request.form['isbn'])
+    data[row] = data[row][0:12] + (request.form['review'],)
+    # still need to save back to file
+    with open(DATAFILE, 'wb') as f:
+        f.writelines(data.csv)
+        f.close()
+    return "I tried, okay? I tried.", 204
+
 
 def book_found(book_data, isbn):
     key = 'ISBN:' + isbn
