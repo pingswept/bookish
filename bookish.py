@@ -4,7 +4,7 @@ import requests
 import tablib
 bookish = Flask(__name__, static_url_path='/static')
 
-DATAFILE = "test.csv"
+DATAFILE = "books.csv"
 
 def commify(some_letters):
 	if ',' in some_letters:
@@ -82,7 +82,7 @@ def check_google_books(isbn):
     data_list = [
         d['title'],
         author,
-        isbn[3:],
+        isbn,
         isbn,
         publisher,
         '',
@@ -101,13 +101,6 @@ def check_open_library(isbn):
     print('Checking Open Library by ISBN-13')
     print(r.status_code)
     book_data = json.loads(r.text)
-    if(not book_found(book_data, isbn)):
-        # This branch of code might be broken. No books with invalid ISBN13 but valid ISBN10 available.
-        print('Nothing found in Open Library via ISBN-13')
-        print('Checking Open Library by ISBN-10')
-        r = requests.get("https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn[3:] + "&jscmd=data&format=json")
-        isbn = isbn[3:]
-        book_data = json.loads(r.text)
     try:
         d = book_data['ISBN:' + isbn]
     except KeyError:
@@ -147,7 +140,7 @@ def check_open_library(isbn):
     data_list = [
         d['title'],
         author,
-        request.form['isbn'][3:],
+        request.form['isbn'],
         request.form['isbn'],
         publisher,
         '',
