@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 import json
 import requests
 import tablib
@@ -6,7 +6,7 @@ bookish = Flask(__name__, static_url_path='/static')
 
 DATAFILE = "books.csv"
 
-def commify(some_letters):
+def commify(some_letters): # wrap data that contains commas in quotes, as expected for CSV files
 	if ',' in some_letters:
 		return '"' + some_letters + '"'
 	else:
@@ -18,7 +18,10 @@ def index():
     with open(DATAFILE) as f:
         dataset.csv = f.read()
         image_html_list = ['<a href="/books/' + isbn + '"><img src="/static/img/' + isbn + '-S.jpg"></a>' for isbn in dataset['ISBN13']]
-        dataset.insert_col(0, image_html_list, header='Cover Image')
+        trash_can_list = ['<a href="/discard/' + str(line_number) + '">&#x1f5d1;</a>' if status == '' else 'discarded' for line_number, status in enumerate(dataset['Discarded'])]
+        del dataset['Discarded']
+        dataset.lpush_col(image_html_list, header='Cover Image')
+        dataset.insert_col(13, trash_can_list, header='Discarded')
     return render_template('index.html', table = dataset.html)
 
 @bookish.route("/books/<isbn>")
@@ -31,19 +34,32 @@ def book_detail(isbn):
     book = data[row]
     return render_template('book.html', title = book[0], author = book[1], isbn = book[3], review = book[12])
 
+@bookish.route("/discard/<linenum>")
+def discard(linenum):
+    data = tablib.Dataset()
+    with open(DATAFILE, 'r') as f:
+        data.csv = f.read()
+    row = data[int(linenum)]
+    print row
+    data[int(linenum)] = row[0:12] + ('discarded',) + (row[13],)
+    # still need to save back to file
+    with open(DATAFILE, 'wb') as f:
+        f.writelines(data.csv)
+        f.close()
+    return redirect(url_for('index'))
+
 @bookish.route("/add_review", methods=['GET', 'POST'])
 def add_review():
     data = tablib.Dataset()    
     with open(DATAFILE, 'r') as f:
         data.csv = f.read()
     row = data[u'ISBN13'].index(request.form['isbn'])
-    data[row] = data[row][0:12] + (request.form['review'],)
+    data[row] = data[row][0:13] + (request.form['review'],)
     # still need to save back to file
     with open(DATAFILE, 'wb') as f:
         f.writelines(data.csv)
         f.close()
     return "I tried, okay? I tried.", 204
-
 
 def book_found(book_data, isbn):
     key = 'ISBN:' + isbn
