@@ -17,8 +17,9 @@ def index():
     dataset = tablib.Dataset()
     with open(DATAFILE) as f:
         dataset.csv = f.read()
-        image_html_list = ['<a href="/books/' + isbn + '"><img src="/static/img/' + isbn + '-S.jpg"></a>' for isbn in dataset['ISBN13']]
-        trash_can_list = ['<a href="/discard/' + str(line_number) + '">&#x1f5d1;</a>' if status == '' else 'discarded' for line_number, status in enumerate(dataset['Discarded'])]
+#        image_html_list = ['<a href="/books/' + isbn + '"><img src="/static/img/' + isbn + '-S.jpg"></a>' for isbn in dataset['ISBN13']]
+        image_html_list = ['<a href="/books/' + isbn + '">X</a>' for isbn in dataset['ISBN13']]
+        trash_can_list = ['<a href="#" onclick="discardBook(this, ' + str(line_number) + ')">&#x1f5d1;</a>' if status == '' else 'discarded' for line_number, status in enumerate(dataset['Discarded'])]
         del dataset['Discarded']
         dataset.lpush_col(image_html_list, header='Cover Image')
         dataset.insert_col(13, trash_can_list, header='Discarded')
@@ -34,7 +35,7 @@ def book_detail(isbn):
     book = data[row]
     return render_template('book.html', title = book[0], author = book[1], isbn = book[3], review = book[12])
 
-@bookish.route("/discard/<linenum>")
+@bookish.route("/discard/<linenum>", methods=['GET', 'POST'])
 def discard(linenum):
     data = tablib.Dataset()
     with open(DATAFILE, 'r') as f:
@@ -46,7 +47,7 @@ def discard(linenum):
     with open(DATAFILE, 'wb') as f:
         f.writelines(data.csv)
         f.close()
-    return redirect(url_for('index'))
+    return "I tried, okay? I tried.", 204
 
 @bookish.route("/add_review", methods=['GET', 'POST'])
 def add_review():

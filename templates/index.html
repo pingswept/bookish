@@ -21,6 +21,11 @@
 </div>
 </body>
 <script>
+  function discardBook(trashcan, linenum) {
+    $.post("/discard/" + linenum, function() {
+        $(trashcan).replaceWith("discarded");
+    });
+  }
   $("#isbn").bind("enterKey",function(e){
     $.post("/get-book-by-isbn", $("#isbn").serialize(), function(data) {
         output = '<tr>' + data + '</tr>'
